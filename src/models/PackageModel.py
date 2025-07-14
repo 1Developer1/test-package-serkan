@@ -102,7 +102,7 @@ class TestPackageSerkanExecutorConfigs(Configs):
 #outpuların keylerinin ilk harfleri küçük olmalıdır. karşılarına gelen valueler de nesnedir
 #burada belirttiğimiz outputların yapılandırma classlarını yukarıda tanımlıyoruz.
 #burada value objesini tanımlarken name parametresiyle buradaki key ismi aynı olmalıdır.
-class PackageOutputs(Outputs):
+class TestPackageSerkanExecutorOutputs(Outputs):
     outputImage: OutputImage
 
 # requestler ve responseler her executor için özel olarak oluşturulur.
