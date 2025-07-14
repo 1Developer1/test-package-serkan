@@ -62,16 +62,20 @@ class KeepSideBBox(Config):
     """
         Rotate image without catting off sides.
     """
+    # Parametreyi executorda çekerken name parametresi kullanılır.
     name: Literal["KeepSide"] = "KeepSide"
     value: Union[KeepSideTrue, KeepSideFalse]
+    #value parametresinin typini belirtmek için kullanılır.
     type: Literal["object"] = "object"
+    #Varsayılan dropdownlist bu şekilde ayarlanır.
     field: Literal["dropdownlist"] = "dropdownlist"
-
+    #Dropdownlistin her elementi için ayrı ayrı class oluşturulur.
     class Config:
         title = "Keep Sides"
 
-
+# Kullanıcının gireceği parametreleri yapılandırmak için kullanılır.
 class Degree(Config):
+    #parametrenin yorumu burada açıklanma satırı olarak yazılır.
     """
         Positive angles specify counterclockwise rotation while negative angles indicate clockwise rotation.
     """
@@ -80,27 +84,31 @@ class Degree(Config):
     type: Literal["number"] = "number"
     field: Literal["textInput"] = "textInput"
     placeHolder: Literal["[-359, 359]"] = "[-359, 359]"
-
+# burada title parametresi girdilerin başlığını belirler.
     class Config:
         title = "Angle"
 
-
-class PackageInputs(Inputs):
+# başka paketlerden gelen verileri almak için kullanılır.
+# yine aynı şekilde kaç tane input varsa o kadar input yazılır.
+class TestPackageSerkanExecutorInputs(Inputs):
     inputImage: InputImage
 
-
-class PackageConfigs(Configs):
+#kullanıcının gireceği parametrelerini belirlemek için kullanılır.
+class TestPackageSerkanExecutorConfigs(Configs):
     degree: Degree
     drawBBox: KeepSideBBox
 
-
+# modelin UIda kaç tane çıktısı olduğunu belirlemek için kullanılır.
+#outpuların keylerinin ilk harfleri küçük olmalıdır. karşılarına gelen valueler de nesnedir
+#burada belirttiğimiz outputların yapılandırma classlarını yukarıda tanımlıyoruz.
+#burada value objesini tanımlarken name parametresiyle buradaki key ismi aynı olmalıdır.
 class PackageOutputs(Outputs):
     outputImage: OutputImage
 
-
-class PackageRequest(Request):
-    inputs: Optional[PackageInputs]
-    configs: PackageConfigs
+# requestler ve responseler her executor için özel olarak oluşturulur.
+class TestPackageSerkanExecutorRequest(Request):
+    inputs: Optional[TestPackageSerkanExecutorInputs]
+    configs: TestPackageSerkanExecutorConfigs
 
     class Config:
         json_schema_extra = {
@@ -108,13 +116,13 @@ class PackageRequest(Request):
         }
 
 
-class PackageResponse(Response):
-    outputs: PackageOutputs
+class TestPackageSerkanExecutorResponse(Response):
+    outputs: TestPackageSerkanExecutorOutputs
 
-
-class PackageExecutor(Config):
-    name: Literal["Package"] = "Package"
-    value: Union[PackageRequest, PackageResponse]
+# her executor için requestlerini ve responselerini belirlemek için ayrı ayrı executor classı oluşturulur.
+class TestPackageSerkanExecutor(Config):
+    name: Literal["TestPackageSerkanExecutor"] = "TestPackageSerkanExecutor"
+    value: Union[TestPackageSerkanExecutorRequest, TestPackageSerkanExecutorResponse]
     type: Literal["object"] = "object"
     field: Literal["option"] = "option"
 
@@ -126,13 +134,13 @@ class PackageExecutor(Config):
             }
         }
 
-
+#package içindeki executor sayısını belirlemek için kullanılır.
 class ConfigExecutor(Config):
     name: Literal["ConfigExecutor"] = "ConfigExecutor"
-    value: Union[PackageExecutor]
+    value: Union[TestPackageSerkanExecutor]
     type: Literal["executor"] = "executor"
     field: Literal["dependentDropdownlist"] = "dependentDropdownlist"
-
+# tek executor için schema kullanılır. Eğer birden fazla executor varsa schema yazılmaz.
     class Config:
         title = "Task"
         json_schema_extra = {
